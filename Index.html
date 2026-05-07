@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abnet Medical Pro | Professional Health Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #2dd4bf;
+            --bg: #020617;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --accent: #f43f5e;
+        }
+
+        * { scroll-behavior: smooth; box-sizing: border-box; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+        /* BRANDING HEADER */
+        .brand-header {
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, #0f172a, var(--bg));
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .main-logo {
+            font-size: 60px;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px rgba(14,165,233,0.5));
+            margin-bottom: 10px;
+        }
+
+        /* SIDEBAR NAVIGATION */
+        .sidebar {
+            position: fixed; left: -300px; width: 280px; height: 100%;
+            background: var(--card); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000; padding: 40px 20px; box-shadow: 10px 0 40px rgba(0,0,0,0.6);
+            border-right: 2px solid var(--primary);
+        }
+        .sidebar.active { left: 0; }
+        .sidebar h2 { font-size: 1.5rem; color: var(--primary); margin-bottom: 30px; text-align: center; }
+        .sidebar a {
+            display: flex; align-items: center; gap: 15px; padding: 15px; color: var(--text);
+            text-decoration: none; border-radius: 12px; margin-bottom: 10px; transition: 0.3s;
+        }
+        .sidebar a:hover { background: var(--primary); transform: translateX(10px); }
+
+        .menu-trigger {
+            position: fixed; top: 20px; left: 20px; background: var(--primary);
+            color: white; padding: 12px 20px; border-radius: 12px; cursor: pointer;
+            z-index: 2001; font-weight: bold; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* LANDING PAGE SECTIONS */
+        .hero {
+            height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px;
+        }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; font-weight: 800; background: linear-gradient(45deg, #0ea5e9, #2dd4bf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 700px; margin: 25px 0; }
+        
+        .start-btn {
+            padding: 20px 60px; font-size: 1.3rem; background: var(--primary);
+            color: white; border: none; border-radius: 50px; cursor: pointer;
+            font-weight: bold; transition: 0.3s; box-shadow: 0 10px 30px rgba(14,165,233,0.4);
+        }
+        .start-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        .info-section { padding: 100px 20px; text-align: center; background: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 50px auto; }
+        .info-card { background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .info-card:hover { border-color: var(--primary); transform: translateY(-10px); }
+        .info-card i { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
+
+        /* SOCIAL CONNECT */
+        .social-row { display: flex; gap: 20px; justify-content: center; margin-top: 40px; }
+        .social-btn { padding: 15px 30px; border-radius: 12px; color: white; text-decoration: none; font-weight: 800; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .tg { background: #0088cc; }
+        .wa { background: #25d366; }
+
+        /* MAIN APP STYLES */
+        .app-container { display: none; padding-top: 100px; max-width: 1200px; margin: auto; padding-left: 20px; padding-right: 20px; }
+        .page { display: none; animation: slideIn 0.5s ease; }
+        .active-page { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* DISEASE GRID */
+        .disease-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .disease-box { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid #334155; transition: 0.3s; }
+        .disease-box:hover { border-color: var(--primary); background: #1e293b; transform: translateY(-5px); }
+        .disease-box i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 15px; display: block; }
+
+        /* VITALS TRACKER UI */
+        .tracker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .tracker-card { background: var(--card); padding: 30px; border-radius: 20px; }
+        input, textarea { width: 100%; padding: 18px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #334155; background: #020617; color: white; }
+
+        .btn-action { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; }
+
+        /* AI & CHATBOX */
+        .chat-display { height: 400px; overflow-y: auto; padding: 20px; background: #020617; border-radius: 15px; border: 1px solid #334155; margin-bottom: 20px; }
+        .ai-msg { color: var(--secondary); margin-bottom: 15px; }
+        .user-msg { color: white; text-align: right; margin-bottom: 15px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="menu-trigger" id="menuBtn" onclick="toggleNav()">☰ MENU</div>
+
+    <div class="sidebar" id="sidebar">
+        <i class="fas fa-notes-medical" style="font-size: 40px; color: var(--primary); display: block; text-align: center; margin-bottom: 10px;"></i>
+        <h2>ABNET MEDICAL</h2>
+        <a onclick="showPage('home')"><i class="fas fa-th-large"></i> Encyclopedia</a>
+        <a onclick="showPage('vitals')"><i class="fas fa-heartbeat"></i> Vital Trackers</a>
+        <a onclick="showPage('ai')"><i class="fas fa-robot"></i> Medical AI</a>
+        <a onclick="showPage('community')"><i class="fas fa-users"></i> Community Chat</a>
+        <a onclick="showPage('help')"><i class="fas fa-question-circle"></i> Help Center</a>
+        <a onclick="showPage('contact')"><i class="fas fa-paper-plane"></i> Contact Admin</a>
+        <hr style="opacity: 0.1; margin: 30px 0;">
+        <a onclick="location.reload()" style="color: var(--accent)"><i class="fas fa-sign-out-alt"></i> Exit Application</a>
+    </div>
+
+    <div id="landing">
+        <div class="brand-header">
+            <i class="fas fa-laptop-medical main-logo"></i>
+            <h1 style="margin:0; letter-spacing: 2px;">ABNET MEDICAL PRO</h1>
+        </div>
+
+        <section class="hero">
+            <h1>Expert Healthcare Education</h1>
+            <p>Your one-stop digital portal for 20+ disease modules, real-time vital monitoring, and community support.</p>
+            <button class="start-btn" onclick="openApp()">GET STARTED</button>
+        </section>
+
+        <section class="info-section">
+            <h2>Why Use This Platform?</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Verified Content</h3>
+                    <p>Deep medical insights into causes, symptoms, and prevention of major global diseases.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Private Monitoring</h3>
+                    <p>Analyze your BMI, blood pressure, and heart rate without needing a visit to the clinic.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-headset"></i>
+                    <h3>Live Support</h3>
+                    <p>Reach out directly to the medical dashboard administrator for specific inquiries.</p>
+                </div>
+            </div>
+
+            <div class="social-row">
+                <a href="https://t.me/+251965694697" class="social-btn tg"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="https://wa.me/251965694697" class="social-btn wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+        </section>
+    </div>
+
+    <div id="app" class="app-container">
+        
+        <div id="home" class="page active-page">
+            <h2 style="text-align: center; margin-bottom: 40px;">Medical Encyclopedia</h2>
+            <div class="disease-grid" id="mainGrid"></div>
+        </div>
+
+        <div id="vitals" class="page">
+            <div class="tracker-grid">
+                <div class="tracker-card">
+                    <h3>⚖️ BMI Calculator</h3>
+                    <input id="w" type="number" placeholder="Weight (kg)">
+                    <input id="h" type="number" placeholder="Height (m)">
+                    <button class="btn-action" onclick="calcHealth()">Calculate BMI</button>
+                    <p id="bmiRes" style="margin-top:15px; font-weight: bold;"></p>
+                </div>
+                <div class="tracker-card">
+                    <h3>❤️ Heart & Pressure</h3>
+                    <input id="bpm" type="number" placeholder="Heart Rate (BPM)">
+                    <input id="sys" type="number" placeholder="Systolic Pressure">
+                    <button class="btn-action" onclick="checkVitals()">Analyze Vitals</button>
+                    <p id="vitalRes" style="margin-top:15px; font-weight: bold;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="ai" class="page">
+            <div class="tracker-card">
+                <h3>Advanced Medical AI</h3>
+                <div class="chat-display" id="aiBox">
+                    <div class="ai-msg"><b>AI:</b> Hello! I am the Abnet Pro Assistant. Ask me about symptoms or any disease from our list!</div>
+                </div>
+                <input id="aiInput" placeholder="Type symptoms or disease name...">
+                <button class="btn-action" onclick="runAI()">Ask AI Assistant</button>
+            </div>
+        </div>
+
+        <div id="community" class="page">
+            <div class="tracker-card">
+                <h3>Member Chat Hub</h3>
+                <div class="chat-display" id="comBox"></div>
+                <input id="comInput" placeholder="Share a health tip...">
+                <button class="btn-action" onclick="sendCom()">Post Tip</button>
+            </div>
+        </div>
+
+        <div id="help" class="page">
+            <div class="tracker-card" style="text-align: left;">
+                <h2>How to Navigate</h2>
+                <p>1. <b>Encyclopedia:</b> Learn about 20 major diseases.</p>
+                <p>2. <b>Vitals:</b> Check your body measurements for health risks.</p>
+                <p>3. <b>AI:</b> Get instant answers about clinical symptoms.</p>
+                <p>4. <b>Social:</b> Connect with Admin Abnet via Telegram (+251965694697).</p>
+            </div>
+        </div>
+
+        <div id="contact" class="page">
+            <div class="tracker-card">
+                <h2>Direct Admin Contact</h2>
+                <form action="https://formspree.io/f/xdabzvnp" method="POST">
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="msg" placeholder="How can we help?" style="height: 150px;" required></textarea>
+                    <button type="submit" class="btn-action">Send to Abnet</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="detailView" class="page">
+            <button class="start-btn" style="padding:10px 25px; margin-bottom:20px;" onclick="showPage('home')">⬅ Back to List</button>
+            <div class="tracker-card" id="lessonDisplay" style="text-align: left;"></div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleNav() { document.getElementById('sidebar').classList.toggle('active'); }
+
+        function openApp() {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            document.getElementById('menuBtn').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+            document.getElementById('sidebar').classList.remove('active');
+            window.scrollTo(0,0);
+        }
+
+        const medicalData = [
+            { name: "HIV/AIDS", icon: "fa-ribbon", info: "Human Immunodeficiency Virus (HIV) attacks the immune system. Spread via sexual fluids or blood. Managed with ART (Antiretroviral Therapy)." },
+            { name: "Malaria", icon: "fa-mosquito", info: "A mosquito-borne parasite infection. Symptoms include fever, chills, and headache. Prevent with bed nets and medication." },
+            { name: "COVID-19", icon: "fa-virus-covid", info: "Viral respiratory disease spread by droplets. Prevention: vaccines, social distancing, and hygiene." },
+            { name: "Diabetes", icon: "fa-tint", info: "High blood glucose levels. Type 1 is genetic; Type 2 is often lifestyle-based. Manage with diet and insulin." },
+            { name: "Hypertension", icon: "fa-heart-circle-check", info: "High blood pressure (140/90+). It is a major cause of strokes. Reducing salt and exercise are essential." },
+            { name: "Tuberculosis", icon: "fa-lungs", info: "Bacterial infection affecting lungs. Spread through air. Requires 6 months of antibiotic treatment." },
+            { name: "Hepatitis B", icon: "fa-capsules", info: "Liver infection caused by a virus. Preventable by vaccine. Spread through body fluids." },
+            { name: "Asthma", icon: "fa-wind", info: "Chronic airway inflammation causing wheezing and breathlessness. Triggered by dust, smoke, or cold air." },
+            { name: "Cholera", icon: "fa-faucet-drip", info: "Bacterial waterborne disease causing severe diarrhea and dehydration. Rehydration is vital." },
+            { name: "Typhoid", icon: "fa-thermometer-half", info: "Bacterial fever from contaminated food/water. Requires specific antibiotic courses." },
+            { name: "Pneumonia", icon: "fa-lungs-virus", info: "Lung air sac infection causing breathing difficulty. Can be bacterial or viral." },
+            { name: "Stroke", icon: "fa-brain", info: "Loss of blood to brain. Signs: drooping face, arm weakness. This is a medical emergency." },
+            { name: "Gastritis", icon: "fa-fire-alt", info: "Stomach lining inflammation. Caused by H. pylori bacteria or painkillers. Avoid spicy food." },
+            { name: "Anemia", icon: "fa-vial", info: "Lack of healthy red blood cells. Symptoms: Fatigue and paleness. Increase iron-rich food intake." },
+            { name: "Meningitis", icon: "fa-head-side-virus", info: "Infection of brain/spinal membranes. High fever and stiff neck are danger signs." },
+            { name: "Kidney Disease", icon: "fa-biohazard", info: "Kidneys fail to filter blood waste. Often a complication of untreated diabetes or hypertension." },
+            { name: "Arthritis", icon: "fa-bone", info: "Joint inflammation causing stiffness and pain. Physical therapy and medication help manage it." },
+            { name: "Skin Cancer", icon: "fa-sun", info: "Abnormal growth of skin cells. Check moles for changes using the ABCDE rule." },
+            { name: "Obesity", icon: "fa-weight", info: "Excessive body fat accumulation. Increases risk for heart disease and diabetes." },
+            { name: "Dengue", icon: "fa-bug", info: "Viral infection from mosquito bites causing severe joint pain and fever." }
+        ];
+
+        function renderGrid() {
+            const grid = document.getElementById('mainGrid');
+            medicalData.forEach(d => {
+                grid.innerHTML += `
+                    <div class="disease-box" onclick="viewLesson('${d.name}')">
+                        <i class="fas ${d.icon}"></i>
+                        <strong>${d.name}</strong>
+                    </div>
+                `;
+            });
+        }
+
+        function viewLesson(name) {
+            const item = medicalData.find(x => x.name === name);
+            document.getElementById('lessonDisplay').innerHTML = `<h1>${item.name}</h1><hr style="opacity:0.1; margin:20px 0;"><p style="font-size:1.3rem; line-height:1.8;">${item.info}</p>`;
+            showPage('detailView');
+        }
+
+        function runAI() {
+            let input = document.getElementById('aiInput').value.toLowerCase();
+            let box = document.getElementById('aiBox');
+            if(!input) return;
+            box.innerHTML += `<div class="user-msg"><b>You:</b> ${input}</div>`;
+            
+            let found = medicalData.find(d => input.includes(d.name.toLowerCase()));
+            let reply = "I can help with information about the 20 diseases listed in our portal. Please ask about symptoms or definitions!";
+            
+            if(found) reply = `<b>Medical Insight:</b> ${found.info}`;
+            else if(input.includes("hello") || input.includes("hi")) reply = "Hello! I am your medical assistant. How can I help with your health query today?";
+
+            setTimeout(() => {
+                box.innerHTML += `<div class="ai-msg"><b>AI:</b> ${reply}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 600);
+            document.getElementById('aiInput').value = "";
+        }
+
+        function calcHealth() {
+            let w = document.getElementById('w').value;
+            let h = document.getElementById('h').value;
+            if(w && h) {
+                let bmi = (w / (h * h)).toFixed(1);
+                let cat = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Healthy" : "Overweight";
+                document.getElementById('bmiRes').innerHTML = `Result: ${bmi} (${cat})`;
+            }
+        }
+
+        function checkVitals() {
+            let b = document.getElementById('bpm').value;
+            let s = document.getElementById('sys').value;
+            let res = "Vitals Logged.";
+            if(b > 100 || s > 140) res = "⚠️ Warning: Elevated vitals detected. Consult a doctor.";
+            document.getElementById('vitalRes').innerHTML = res;
+        }
+
+        function sendCom() {
+            let val = document.getElementById('comInput').value;
+            if(val) {
+                document.getElementById('comBox').innerHTML += `<p><b>Member:</b> ${val}</p>`;
+                document.getElementById('comInput').value = "";
+            }
+        }
+
+        renderGrid();
+    </script>
+</body>
+</html>
